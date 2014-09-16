@@ -51,7 +51,21 @@ module NetSuite
 
         body
       end
-
+      
+      def response_errors
+        if response_hash[:status] && response_hash[:status][:status_detail]
+          @response_errors ||= errors
+        end
+      end
+      
+      def errors
+        error_obj = response_hash[:status][:status_detail]
+        error_obj = [error_obj] if error_obj.class == Hash
+        error_obj.map do |error|
+          NetSuite::Error.new(error)
+        end
+      end
+      
       def response_hash
         @response_hash ||= @response.to_hash[:delete_response][:write_response]
       end
@@ -71,6 +85,9 @@ module NetSuite
                       else
                         NetSuite::Actions::Delete.call([self, options], credentials)
                       end
+          
+          @errors = response.errors
+          
           response.success?
         end
       end
