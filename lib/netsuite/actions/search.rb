@@ -135,6 +135,7 @@ module NetSuite
                   "platformCore:searchValue" => {
                     :content! => condition[:value].map(&:to_record),
                     '@internalId' => condition[:value].map(&:internal_id),
+                    '@externalId' => condition[:value].map(&:external_id),
                     '@xsi:type' => 'platformCore:RecordRef',
                     '@type' => 'account'
                   }
